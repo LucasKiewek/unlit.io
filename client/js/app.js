@@ -45,7 +45,7 @@ window.onload = function() {
             if (validNick()) {
                 startGame();
             } else {
-                alert("Nickname must contain only alphanumeric characters.")
+                alert("Nickname must contain only alphanumeric characters.");
             }
         }
     };
@@ -57,7 +57,7 @@ window.onload = function() {
             if (validNick()) {
                 startGame();
             } else {
-                alert("Nickname must contain only alphanumeric characters.")
+                alert("Nickname must contain only alphanumeric characters.");
             }
         }
     });
