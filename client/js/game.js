@@ -23,39 +23,21 @@ $(window).bind('mousewheel DOMMouseScroll', function (event) {
        event.preventDefault();
        }
 
+
+});
+
 var PlayArea = class {
-    constructor(x, y, width, height, id) {
-        this.width = width;
-        this.height = height;
-        this.x = x;
-        this.y = y;
-        this.speedX = 0;
-        this.speedY = 0;
-        this.offsetX = (window.innerWidth - this.width) / 2;
-        this.offsetY = (window.innerHeight - this.height) / 2;
-    }
-    updateOffset() {
-        this.offsetX = (window.innerWidth - this.width) / 2;
-        this.offsetY = (window.innerHeight - this.height) / 2;
-    }
-    draw(gfx, pl_arr) {
-        gfx.beginPath();
-        gfx.lineWidth = "2";
-        gfx.strokeStyle = "white";
-        gfx.rect(this.x + this.offsetX, this.y + this.offsetY, this.width, this.height);
-        gfx.stroke();
-        for (var i = 0; i < pl_arr.length; i++) {
-            gfx.beginPath();
-            gfx.arc(this.x + this.offsetX + pl_arr[i].x, this.y + this.offsetY + pl_arr[i].y, pl_arr[i].radius, 0, 2 * Math.PI, true);
-            gfx.fillStyle = "#fff";
-            gfx.fill();
-            gfx.font = "14px Arial";
-            gfx.fillStyle = "gray";
-            gfx.fillText(pl_arr[i].nick,
-                this.x + this.offsetX + pl_arr[i].x - pl_arr[i].radius + ((2 * pl_arr[i].radius) - gfx.measureText(pl_arr[i].nick).width) / 2,
-                this.y + this.offsetY + pl_arr[i].y - 15);
-        }
-    }
+  constructor(width, height, id) {
+      this.width = width;
+      this.height = height;
+  }
+  draw(gfx, x, y) {
+    gfx.beginPath();
+    gfx.lineWidth = "2";
+    gfx.strokeStyle = "white";
+    gfx.rect(x, y, this.width, this.height);
+    gfx.stroke();
+  }
 }
 
 var Circle = class {
@@ -63,14 +45,23 @@ var Circle = class {
         this.x = initialX;
         this.y = initialY;
         this.id = id;
-        this.radius = rad;
-        this.nick = "";
+        this.radius = rad
     }
-    draw(ctx, width, height, canvX, canvY) {
+    update(newX, newY) {
+        this.x = newX;
+        this.y = newY;
+    }
+    draw(pl_arr, ctx, width, height, canvX, canvY) {
         ctx.beginPath();
-        ctx.arc(width / 2, height / 2, this.radius, 0, 2 * Math.PI, true);
+        ctx.arc(width/2, height/2, this.radius, 0, 2 * Math.PI, true);
         ctx.fillStyle = "#fff";
         ctx.fill();
+        for (var i = 0; i < pl_arr.length; i++) {
+            ctx.beginPath();
+            ctx.arc(canvX + pl_arr[i].x, canvY + pl_arr[i].y, pl_arr[i].radius, 0, 2 * Math.PI, true);
+            ctx.fillStyle = "#fff";
+            ctx.fill();
+        }
     }
     get_id() {
         return (this.id);
@@ -81,17 +72,9 @@ var Circle = class {
     }
 }
 
-var map = new PlayArea(0, 0, 1400, 700);
-var player = new Circle(map.width / 2, map.height / 2, "", 10);
+var player = new Circle(100, 100, "", 10);
 var players = [];
-
-window.addEventListener('resize', function() {
-    map.updateOffset();
-}, true);
-
-Game.prototype.setName = function(name) {
-    player.nick = name;
-}
+var map = new PlayArea(1400, 700);
 
 Game.prototype.handleNetwork = function(socket) {
 
@@ -142,31 +125,40 @@ Game.prototype.handleNetwork = function(socket) {
     });
 }
 
+var speedX = 0;
+var speedY = 0;
+var canvX = 0;
+var canvY = 0;
+var plX = map.width/2;
+var plY = map.height/2;
+
 Game.prototype.handleLogic = function(socket, w, h) {
-    map.speedX = -(mouseX - (window.innerWidth / 2)) / (window.innerWidth / 10);
-    map.speedY = -(mouseY - (window.innerHeight / 2)) / (window.innerHeight / 10);
+    speedX = -(mouseX - (map.width/2))/85;
+    speedY = -(mouseY - (map.height/2))/85;
 
-    if (map.speedX > 3) {
-        map.speedX = 3;
-    } else if (map.speedX < -3) {
-        map.speedX = -3;
+    // if speed > some_constant
+    if (speedX > 3) {
+      speedX = 3;
+    } else if (speedX < -3) {
+      speedX = -3;
     }
 
-    if (map.speedY > 3) {
-        map.speedY = 3;
-    } else if (map.speedY < -3) {
-        map.speedY = -3;
+    if (speedY > 3) {
+      speedY = 3;
+    } else if (speedY < -3) {
+      speedY = -3;
     }
 
-    if (!(map.x + map.speedX + player.radius > map.width / 2) && !(map.x + map.speedX - player.radius < (-1 * map.width / 2))) {
-        map.x += map.speedX;
-        player.x -= map.speedX;
+    if (!(canvX + speedX + player.radius > map.width / 2) && !(canvX + speedX - player.radius < (-1 * map.width / 2))){
+      canvX += speedX;
+      plX -= speedX;
     }
-    if (!(map.y + map.speedY + player.radius > map.height / 2) && !(map.y + map.speedY - player.radius < (-1 * map.height / 2))) {
-        map.y += map.speedY;
-        player.y -= map.speedY;
+    if (!(canvY + speedY + player.radius > map.height / 2) && !(canvY + speedY - player.radius < (-1 * map.height / 2))){
+      canvY += speedY;
+      plY -= speedY;
     }
 
+    player.update(plX, plY);
     socket.emit('update', JSON.stringify(player));
 }
 
@@ -177,7 +169,7 @@ Game.prototype.handleGraphics = function(gfx, w, h) {
     gfx.fillStyle = "black";
     gfx.fillRect(0, 0, w, h);
 
-    map.draw(gfx, players);
+    map.draw(gfx, canvX, canvY);
 
-    player.draw(gfx, window.innerWidth, window.innerHeight, map.x, map.y);
+    player.draw(players, gfx, map.width, map.height, canvX, canvY);
 }
