@@ -27,8 +27,8 @@ var PlayArea = class {
             gfx.arc(this.x + this.offsetX + pl_arr[i].x, this.y + this.offsetY + pl_arr[i].y, pl_arr[i].radius, 0, 2 * Math.PI, true);
             gfx.fillStyle = "#fff";
             gfx.fill();
-            gfx.font = "12px Arial";
-            gfx.fillStyle = "red";
+            gfx.font = "14px Arial";
+            gfx.fillStyle = "gray";
             gfx.fillText(pl_arr[i].nick,
                 this.x + this.offsetX + pl_arr[i].x - pl_arr[i].radius + ((2 * pl_arr[i].radius) - gfx.measureText(pl_arr[i].nick).width) / 2,
                 this.y + this.offsetY + pl_arr[i].y - 15);
@@ -49,11 +49,6 @@ var Circle = class {
         ctx.arc(width / 2, height / 2, this.radius, 0, 2 * Math.PI, true);
         ctx.fillStyle = "#fff";
         ctx.fill();
-        ctx.font = "14px Arial";
-        ctx.fillStyle = "gray";
-        ctx.fillText(this.nick,
-            width / 2 - this.radius + ((2 * this.radius) - ctx.measureText(this.nick).width) / 2,
-            height / 2 - 15);
     }
     get_id() {
         return (this.id);
