@@ -17,10 +17,22 @@ An online game built with socket.IO and HTML5 canvas on top of NodeJS.
 - As you gain power, you become more visible to make the game fairer for all.
 
 ## Credits
-- Ben Botvinick - System Administration and Development Operations Management
-- Robert May - Server Architecture and Backend Development
-- Sequoyah Sudler - Frontend Development
+
+#### Administrative
+- Ben Botvinick - CEO
+- Henry Perine - CFO
+- Robert May - CTO
+
+#### Backend Development
+- Ben Botvinick - System Administration
+- Robert May - Backend development
+
+#### Frontend Development
+- Will Hagele - Frontend Development
+- Thomas Shaw - Frontend Development
 - Dylan Marchlinski - Web Design
 - Lucas Kiewek - Game Design
 - Avi Sriram - Game Design
 - Rich Soong - Game Design
+
+A special thanks to [Germantown Friends School](https://germantownfriends.org) for funding!
