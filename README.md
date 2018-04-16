@@ -36,7 +36,7 @@ An online game built with socket.IO and HTML5 canvas on top of NodeJS.
 - Rich Soong - Game Design
 
 #### Sponsors
-- [Germantown Friends School](https://germantownfriends.org)
+- [Germantown Friends School](https://www.germantownfriends.org)
 - [Akshay Kulkarni](https://www.youtube.com/watch?v=hKXKcePcipc)
 - Henry Perine
 - Rich Soong
