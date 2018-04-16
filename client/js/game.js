@@ -1,11 +1,26 @@
 function Game() {};
 
 
+var PlayArea = class {
+  constructor(width, height, id) {
+      this.width = width;
+      this.height = height;
+  }
+  draw(gfx, x, y) {
+    gfx.beginPath();
+    gfx.lineWidth = "2";
+    gfx.strokeStyle = "white";
+    gfx.rect(x, y, this.width, this.height);
+    gfx.stroke();
+  }
+}
+
 var Circle = class {
-    constructor(initialX, initialY, id) {
+    constructor(initialX, initialY, id, rad) {
         this.x = initialX;
         this.y = initialY;
         this.id = id;
+        this.radius = rad
     }
     update(newX, newY) {
         this.x = newX;
@@ -13,12 +28,12 @@ var Circle = class {
     }
     draw(pl_arr, ctx, width, height, canvX, canvY) {
         ctx.beginPath();
-        ctx.arc(width/2, height/2, 10, 0, 2 * Math.PI, true);
+        ctx.arc(width/2, height/2, this.radius, 0, 2 * Math.PI, true);
         ctx.fillStyle = "#fff";
         ctx.fill();
         for (var i = 0; i < pl_arr.length; i++) {
             ctx.beginPath();
-            ctx.arc(canvX + pl_arr[i].x, canvY + pl_arr[i].y, 10, 0, 2 * Math.PI, true);
+            ctx.arc(canvX + pl_arr[i].x, canvY + pl_arr[i].y, pl_arr[i].radius, 0, 2 * Math.PI, true);
             ctx.fillStyle = "#fff";
             ctx.fill();
         }
@@ -32,8 +47,9 @@ var Circle = class {
     }
 }
 
-var player = new Circle(100, 100, "");
+var player = new Circle(100, 100, "", 10);
 var players = [];
+var map = new PlayArea(1400, 700);
 
 Game.prototype.handleNetwork = function(socket) {
 
@@ -88,15 +104,12 @@ var speedX = 0;
 var speedY = 0;
 var canvX = 0;
 var canvY = 0;
-var plX = 10000;
-var plY = 10000;
+var plX = map.width/2;
+var plY = map.height/2;
 
-Game.prototype.handleLogic = function(socket, width, height) {
-    speedX = -(mouseX - (width/2))/85;
-    speedY = -(mouseY - (height/2))/85;
-
-    plX = (plX == 10000) ? width/2 : plX;
-    plY = (plY == 10000) ? height/2 : plY;
+Game.prototype.handleLogic = function(socket, w, h) {
+    speedX = -(mouseX - (map.width/2))/85;
+    speedY = -(mouseY - (map.height/2))/85;
 
     // if speed > some_constant
     if (speedX > 3) {
@@ -111,32 +124,27 @@ Game.prototype.handleLogic = function(socket, width, height) {
       speedY = -3;
     }
 
-    if (!(canvX + speedX > width / 2) && !(canvX + speedX < (-1 * width / 2))){
+    if (!(canvX + speedX + player.radius > map.width / 2) && !(canvX + speedX - player.radius < (-1 * map.width / 2))){
       canvX += speedX;
       plX -= speedX;
     }
-    if (!(canvY + speedY > height / 2) && !(canvY + speedY < (-1 * height / 2))){
+    if (!(canvY + speedY + player.radius > map.height / 2) && !(canvY + speedY - player.radius < (-1 * map.height / 2))){
       canvY += speedY;
       plY -= speedY;
     }
 
-    console.log("player location: " + plX, plY);
     player.update(plX, plY);
     socket.emit('update', JSON.stringify(player));
 }
 
-Game.prototype.handleGraphics = function(gfx, width, height) {
-    gfx.clearRect(0, 0, width, height);
+Game.prototype.handleGraphics = function(gfx, w, h) {
+    gfx.clearRect(0, 0, w, h);
 
     gfx.beginPath();
     gfx.fillStyle = "black";
-    gfx.fillRect(0, 0, width, height);
+    gfx.fillRect(0, 0, w, h);
 
-    gfx.beginPath();
-    gfx.lineWidth = "2";
-    gfx.strokeStyle = "white";
-    gfx.rect(canvX, canvY, width, height);
-    gfx.stroke();
+    map.draw(gfx, canvX, canvY);
 
-    player.draw(players, gfx, width, height, canvX, canvY);
+    player.draw(players, gfx, map.width, map.height, canvX, canvY);
 }
