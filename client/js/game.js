@@ -5,20 +5,26 @@ var PlayArea = class {
   constructor(x, y, width, height, id) {
       this.width = width;
       this.height = height;
-      this.x = x
-      this.y = y
+      this.x = x;
+      this.y = y;
       this.speedX = 0;
       this.speedY = 0;
+      this.offsetX = (window.innerWidth - this.width) / 2;
+      this.offsetY = (window.innerHeight - this.height) / 2;
+  }
+  updateOffset() {
+    this.offsetX = (window.innerWidth - this.width) / 2;
+    this.offsetY = (window.innerHeight - this.height) / 2;
   }
   draw(gfx, pl_arr) {
     gfx.beginPath();
     gfx.lineWidth = "2";
     gfx.strokeStyle = "white";
-    gfx.rect(this.x, this.y, this.width, this.height);
+    gfx.rect(this.x + this.offsetX, this.y + this.offsetY, this.width, this.height);
     gfx.stroke();
     for (var i = 0; i < pl_arr.length; i++) {
         gfx.beginPath();
-        gfx.arc(this.x + pl_arr[i].x, this.y + pl_arr[i].y, pl_arr[i].radius, 0, 2 * Math.PI, true);
+        gfx.arc(this.x + this.offsetX + pl_arr[i].x, this.y + this.offsetY + pl_arr[i].y, pl_arr[i].radius, 0, 2 * Math.PI, true);
         gfx.fillStyle = "#fff";
         gfx.fill();
     }
@@ -50,6 +56,10 @@ var Circle = class {
 var map = new PlayArea(0, 0, 1400, 700);
 var player = new Circle(map.width/2, map.height/2, "", 10);
 var players = [];
+
+window.addEventListener('resize', function() {
+    map.updateOffset();
+}, true);
 
 Game.prototype.handleNetwork = function(socket) {
 
@@ -101,8 +111,8 @@ Game.prototype.handleNetwork = function(socket) {
 }
 
 Game.prototype.handleLogic = function(socket, w, h) {
-    map.speedX = -(mouseX - (map.width/2))/85;
-    map.speedY = -(mouseY - (map.height/2))/85;
+    map.speedX = -(mouseX - (window.innerWidth/2))/(window.innerWidth/10);
+    map.speedY = -(mouseY - (window.innerHeight/2))/(window.innerHeight/10);
 
     // if speed > some_constant
     if (map.speedX > 3) {
@@ -138,5 +148,5 @@ Game.prototype.handleGraphics = function(gfx, w, h) {
 
     map.draw(gfx, players);
 
-    player.draw(gfx, map.width, map.height, map.x, map.y);
+    player.draw(gfx, window.innerWidth, window.innerHeight, map.x, map.y);
 }
