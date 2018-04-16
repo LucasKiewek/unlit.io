@@ -35,7 +35,6 @@ An online game built with socket.IO and HTML5 canvas on top of NodeJS.
 - Avi Sriram - Game Design
 - Rich Soong - Game Design
 
-A special thanks to [Germantown Friends School](https://germantownfriends.org) for funding!
 #### Sponsors
 - [Germantown Friends School](https://germantownfriends.org)
 - Henry Perine
