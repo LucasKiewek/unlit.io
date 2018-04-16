@@ -41,4 +41,4 @@ An online game built with socket.IO and HTML5 canvas on top of NodeJS.
 - Rich Soong
 - Avi Sriram
 - Jekeun Jung
-- Akshay Kulkarni
+- [Akshay Kulkarni](https://www.youtube.com/watch?v=hKXKcePcipc)
