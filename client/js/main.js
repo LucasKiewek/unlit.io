@@ -31,6 +31,16 @@ $(document).ready(function() {
     cycle();
 });
 
+$(document).keydown(function(event) {
+    if (event.ctrlKey == true) {
+        event.preventDefault();
+    }
+    if (event.metaKey == true) {       
+        event.preventDefault();
+    }
+});
+
+
 var place = 0;
 var ruleList = ["Click to toggle your flashlight!", "Shine your light on other ghosts!", "Avoid other players' flashlights!", "Welcome to unlit.io!"];
 var interval = setInterval(function() {
