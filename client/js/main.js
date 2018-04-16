@@ -32,14 +32,10 @@ $(document).ready(function() {
 });
 
 $(document).keydown(function(event) {
-    if (event.ctrlKey == true) {
-        event.preventDefault();
-    }
-    if (event.metaKey == true) {       
+    if (event.ctrlKey || event.metaKey) {
         event.preventDefault();
     }
 });
-
 
 var place = 0;
 var ruleList = ["Click to toggle your flashlight!", "Shine your light on other ghosts!", "Avoid other players' flashlights!", "Welcome to unlit.io!"];
