@@ -22,6 +22,7 @@ function startGame() {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
     document.getElementById('gameAreaWrapper').style.display = 'block';
     document.getElementById('startMenuWrapper').style.display = 'none';
+    game.setName(playerName);
     var socket = io();
     SetupSocket(socket);
     animloop();
