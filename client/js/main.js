@@ -32,7 +32,7 @@ $(document).ready(function() {
 });
 
 $(document).keydown(function(event) {
-    if (event.ctrlKey || event.metaKey) {
+    if (event."107" || event."61" || event."173" || event."109" || event."189" || event."187") {
         event.preventDefault();
     }
 });
